@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-require('dotenv').config()
+require('dotenv').config({ path: './.env' })
 const Note = require('./models/note')
 // var morgan = require('morgan')
 const cors = require('cors')
