@@ -9,10 +9,20 @@ app.use(cors())
 app.use(express.json())
 app.use(express.static('build'))
 
-app.use(
-  morgan(
-    ':method :url :status :res[content-length] - :response-time ms :content'))
-morgan.token('content', request => JSON.stringify(request.body))
+const requestLogger = (request, response, next) => {
+  console.log('Method:', request.method)
+  console.log('Path:  ', request.path)
+  console.log('Body:  ', request.body)
+  console.log('---')
+  next()
+}
+
+// app.use(
+//   morgan(
+//     ':method :url :status :res[content-length] - :response-time ms :content'))
+// morgan.token('content', request => JSON.stringify(request.body))
+
+app.use(requestLogger)
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
@@ -89,8 +99,9 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-const PORT = process.env.PORT 
+app.use(errorHandler)
 
+const PORT = process.env.PORT 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
