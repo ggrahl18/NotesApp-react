@@ -31,28 +31,6 @@ app.get('/api/notes', (request, response) => {
   })
 })
 
-app.post('/api/notes', (request, response, next) => {
-  const body = request.body
-
-  if (body.content === undefined) {
-    return response.status(400).json({ error: 'content missing' })
-  }
-
-  const note = new Note({
-    content: body.content,
-    important: body.important || false,
-    date: new Date(),
-  })
-
-  note
-    .save()
-    .then(savedNote => savedNote.toJSON())
-    .then(savedAndFormattedNote => {
-      response.json(savedAndFormattedNote)
-    }) 
-    .catch(error => next(error)) 
-})
-
 app.get('/api/notes/:id', (request, response, next) => {
   Note.findById(request.params.id)
     .then(note => {
@@ -61,6 +39,22 @@ app.get('/api/notes/:id', (request, response, next) => {
       } else {
         response.status(404).end()
       }
+    })
+    .catch(error => next(error))
+})
+
+app.post('/api/notes', (request, response, next) => {
+  const body = request.body
+
+  const note = new Note({
+    content: body.content,
+    important: body.important || false,
+    date: new Date(),
+  })
+
+  note.save()
+    .then(savedNote => {
+      response.json(savedNote.toJSON())
     })
     .catch(error => next(error))
 })
@@ -99,7 +93,7 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError' && error.kind == 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
+  }  else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
 
@@ -108,7 +102,7 @@ const errorHandler = (error, request, response, next) => {
 
 app.use(errorHandler)
 
-const PORT = process.env.PORT 
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
