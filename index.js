@@ -1,6 +1,6 @@
+require('dotenv').config()
 const express = require('express')
 const app = express()
-require('dotenv').config()
 const Note = require('./models/note')
 // var morgan = require('morgan')
 const cors = require('cors')
@@ -17,12 +17,11 @@ const requestLogger = (request, response, next) => {
   next()
 }
 
+app.use(requestLogger)
 // app.use(
 //   morgan(
 //     ':method :url :status :res[content-length] - :response-time ms :content'))
 // morgan.token('content', request => JSON.stringify(request.body))
-
-app.use(requestLogger)
 
 app.get('/api/notes', (request, response) => {
   Note.find({}).then(notes => {
@@ -30,7 +29,7 @@ app.get('/api/notes', (request, response) => {
   })
 })
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
   const body = request.body
 
   if (body.content === undefined) {
@@ -43,9 +42,11 @@ app.post('/api/notes', (request, response) => {
     date: new Date(),
   })
 
-  note.save().then(savedNote => {
-    response.json(savedNote.toJSON())
-  })
+  note.save()
+    .then(savedNote => {
+      response.json(savedNote.toJSON())
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/notes/:id', (request, response, next) => {
@@ -94,7 +95,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError' && error.kind == 'ObjectId') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }
