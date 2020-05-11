@@ -1,6 +1,8 @@
-POST http://localhost:3001/api/notes
-api/notes
+post http://localhost:3001/api/notes
+Content-Type: application/json 
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImdncmFobCIsImlkIjoiNWViMWRhNDQyMmFjNzE0YTkxMzFlMDY4IiwiaWF0IjoxNTg4NzE0MTIyfQ.SHVBXdEeED43tzPmEl5l7gspjobqHJyBEkVlmFQtRZE
+
 {
-	"content": "Postman isa good tool for testing REST apis",
-	"important": true
+"content": "Single page apps use token authentication", 
+"important": true
 }
