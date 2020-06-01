@@ -12,7 +12,8 @@
     "logs:prod": "heroku logs --tail",
     "heroku:config": "heroku config:set MONGODB_URI=mongodb+srv://bossMan:mrcars25@cluster0-1mffo.mongodb.net/note-app?retryWrites=true&w=majority",
     "lint": "eslint .",
-    "test": "cross-env NODE_ENV=test jest --verbose --runInBand"
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
+    "start:test": "cross-env NODE_ENV=test node index.js"
   },
   "author": "Garrett",
   "license": "MIT",
@@ -29,6 +30,7 @@
   "devDependencies": {
     "cross-env": "^7.0.2",
     "eslint": "^6.8.0",
+    "eslint-plugin-cypress": "^2.10.3",
     "jest": "^25.5.4",
     "nodemon": "^2.0.3",
     "supertest": "^4.0.2"
